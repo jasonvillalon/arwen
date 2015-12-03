@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+
+(cd $(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd));
+  find src test migrations -name "*.js" | xargs node_modules/.bin/eslint)

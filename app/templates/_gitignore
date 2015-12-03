@@ -1,0 +1,8 @@
+node_modules/
+logs/
+files/
+*.log
+config/local*
+tmp*
+build/
+html-report/
