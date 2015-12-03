@@ -146,16 +146,13 @@ export default {  Logger,
 ```
 # Sample index.js
 ```
-import Logger from "../Logger/index"
-import * as Validators from "../Validators/index"
-import Statics from "../Statics/index"
-import throttle from "../throttle/index"
+import dependencies from "./dependencies"
 
+let {Server} = dependencies
 
-export default {  Logger,
-  Validators,
-  Statics,
-  throttle,
+export function run() {
+  console.log("Welcome to Atomic Project")
+  Server.run()
 }
 ```
 
