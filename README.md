@@ -15,6 +15,10 @@ $ npm install -g gulp
 
 # Installation:
 ```
+npm install generator-arwen -g
+```
+or
+```
 $ git clone https://github.com/jasonvillalon/generator-arwen.git
 $ npm link
 ```
