@@ -130,12 +130,6 @@ var AtomicGenerator = yeoman.generators.Base.extend({
     }.bind(this);
     askForAtomDeps();
   },
-  renderComponentBowerDependencies: function() {
-  },
-  renderComponentNPMDependencies: function() {
-  },
-  renderComponentJSPMDependencies: function() {
-  },
   copyApplicationFolder: function() {
     this.dependencies = json.plain(this.dependencies);
     this.template("index.js", "src/" + this.classifiedComponentName + "/index.js");
