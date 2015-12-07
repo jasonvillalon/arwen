@@ -106,6 +106,7 @@ var arwenGenerator = yeoman.generators.Base.extend({
     this.template('_babelrc', '.babelrc');
     this.template('_editorconfig', '.editorconfig');
     this.template('_gitignore', '.gitignore');
+    this.template('_eslintrc', '.eslintrc');
     this.copy('gulpfile.js');
     this.copy('package.json');
     this.copy('nodemon.json');
