@@ -1,4 +1,68 @@
 {
-  "stage": 0,
-  "optional": ["runtime"]
+  "presets": ["stage-0", "es2015"],
+  "plugins": [
+    // Syntax
+    "add-module-exports",
+    "syntax-async-functions",
+    "syntax-async-generators",
+    "syntax-export-extensions",
+    "syntax-class-constructor-call",
+    "syntax-class-properties",
+    "syntax-decorators",
+    "syntax-do-expressions",
+    "syntax-exponentiation-operator",
+    "syntax-flow",
+    "syntax-function-bind",
+    "syntax-object-rest-spread",
+    "syntax-trailing-function-commas",
+    // ES3
+    "transform-es3-member-expression-literals",
+    "transform-es3-property-literals",
+    // ES5
+    "transform-es5-property-mutators",
+    // ES2015 (ES6+)
+    "transform-class-constructor-call",
+    "transform-class-properties",
+    "transform-decorators",
+    "transform-do-expressions",
+     "transform-es2015-arrow-functions",
+    "transform-es2015-block-scoped-functions",
+     "transform-es2015-block-scoping",
+    "transform-es2015-classes",
+    "transform-es2015-computed-properties",
+    "transform-es2015-constants",
+    "transform-es2015-destructuring",
+    "transform-es2015-for-of",
+    "transform-es2015-function-name",
+    "transform-es2015-literals",
+    "transform-es2015-modules-commonjs",
+    "transform-es2015-object-super",
+    "transform-es2015-parameters",
+    "transform-es2015-shorthand-properties",
+    "transform-es2015-spread",
+    "transform-es2015-sticky-regex",
+    "transform-es2015-template-literals",
+    "transform-es2015-typeof-symbol",
+    "transform-es2015-unicode-regex",
+
+    // ES7+
+    "transform-async-to-generator",
+    "transform-export-extensions",
+
+    // Strict Mode
+    "transform-exponentiation-operator",
+    "transform-flow-strip-types",
+    "transform-function-bind",
+    "transform-member-expression-literals",
+    ////"transform-merge-sibling-variables",
+    "transform-minify-booleans",
+    "transform-object-rest-spread",
+    "transform-property-literals",
+    ////"transform-remove-console",
+    "transform-remove-debugger",
+    "transform-runtime",
+    "transform-strict-mode",
+    "transform-undefined-to-void",
+    "typecheck"
+  ]
 }

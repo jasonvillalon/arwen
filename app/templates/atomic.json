@@ -1,4 +1,4 @@
 {
-  "Name": "Learn-API",
+  "Name": "<% slugifiedAppName %>",
   "AtomicDeps": []
 }

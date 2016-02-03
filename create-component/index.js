@@ -41,7 +41,6 @@ var AtomicGenerator = yeoman.generators.Base.extend({
 
     this.prompt(prompts, function(props) {
       this.componentName = props.componentName;
-      this.componentDescription = props.componentDescription;
       this.componentRepository = props.componentRepository;
 
       this.slugifiedComponentName = this._.slugify(this.componentName);
@@ -55,6 +54,11 @@ var AtomicGenerator = yeoman.generators.Base.extend({
     var done = this.async();
     try {
       var settings = require(path.resolve("atomic.json"));
+      this.component = {
+        "Name": this.componentName,
+        "Repository": this.componentRepository,
+        "AtomicDeps": []
+      };
       done()
     } catch (e) {
       console.log("This is not atomic root project");
@@ -108,18 +112,7 @@ var AtomicGenerator = yeoman.generators.Base.extend({
             delete d.AtomicDeps;
             delete d.config;
             delete d.dependencies;
-            this.dependencies.push(d);
-
-            this.atomic = require(path.resolve("atomic.json"));
-            registerEverything.bind(this)(dependencyInfo);
-            // generate component variables
-            generateVariables.bind(this)();
-            // install required NPM Package
-            npmInstall.bind(this)(this.atomic);
-            // rewrite atomic.json
-            this.mySettings = json.plain(this.atomic);
-            shell.exec("rm -rf " + path.resolve("atomic.json"));
-            this.template("_atomic", path.resolve("atomic.json"));
+            this.component.AtomicDeps.push(d);
             askForAtomDeps();
           }.bind(this));
         } else {
@@ -131,7 +124,18 @@ var AtomicGenerator = yeoman.generators.Base.extend({
     askForAtomDeps();
   },
   copyApplicationFolder: function() {
-    this.dependencies = json.plain(this.dependencies);
+    this.atomic = require(path.resolve("atomic.json"));
+    registerEverything.bind(this)(this.component);
+    // generate component variables
+    generateVariables.bind(this)(this.atomic);
+    // install required NPM Package
+    jspmInstall.bind(this)(this.atomic);
+    // rewrite atomic.json
+    this.mySettings = json.plain(this.atomic);
+    this.component = json.plain(this.component);
+    shell.exec("rm -rf " + path.resolve("atomic.json"));
+    this.template("_atomic", path.resolve("atomic.json"));
+    this.dependencies = json.plain(this.AtomicDeps);
     this.template("index.js", "src/" + this.classifiedComponentName + "/index.js");
     this.template("dependencies.js", "src/" + this.classifiedComponentName + "/dependencies.js");
     this.template("settings.js", "src/" + this.classifiedComponentName + "/settings.js");
