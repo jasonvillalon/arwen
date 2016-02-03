@@ -31,7 +31,7 @@ gulp.task("test", () => {
 
 gulp.task("watch", () => {
   gulp.watch(["./src/**/*"], () => {
-    runSequence("clean", "statics", "templates", "build", "dist", "serve")
+    runSequence("clean", "build", "dist", "serve")
   })
 })
 
@@ -45,7 +45,7 @@ gulp.task("dist", () => {
 })
 
 gulp.task("serve", (cb) => {
-  require("./dist/server").run()
+  require("./dist/Main/index").run()
   cb()
 })
 
@@ -54,5 +54,5 @@ gulp.task("run", (cb) => {
 })
 
 gulp.task("default", (cb) => {
-  return runSequence("clean", "statics", "templates", "build", "dist", cb)
+  return runSequence("clean", "build", "dist", cb)
 })

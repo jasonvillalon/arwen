@@ -1,4 +1,17 @@
 {
   "Name": "<% slugifiedAppName %>",
-  "AtomicDeps": []
+  "AtomicDeps": [
+    {
+      "Name": "Main",
+      "Description": "Main",
+      "Repository": "",
+      "Version": "0.0.0"
+    },
+    {
+      "Name": "Server",
+      "Description": "Server",
+      "Repository": "git@bitbucket.org:jasonvillalon/server.git",
+      "Version": "0.0.0"
+    }
+  ]
 }

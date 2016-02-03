@@ -71,6 +71,8 @@ var AtomicGenerator = yeoman.generators.Base.extend({
 
         this.atomic = require(path.resolve("./../../atomic"));
         registerEverything.bind(this)(dependencyInfo);
+
+        this.config = this.atomic.config
         // generate component variables
         generateVariables.bind(this)();
         // install required NPM Package
