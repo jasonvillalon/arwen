@@ -1,0 +1,4 @@
+src/www/*
+seeders/*
+**/db-migration.js
+src/**/settings.js

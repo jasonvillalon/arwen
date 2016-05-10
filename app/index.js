@@ -1,15 +1,14 @@
-'use strict';
-var util = require('util'),
-  path = require('path'),
-  yeoman = require('yeoman-generator'),
-  chalk = require('chalk'),
-  shell = require('shelljs');
+"use strict";
+var
+  yeoman = require("yeoman-generator"),
+  shell = require("shelljs"),
+  chalk = require("chalk");
 
 var arwenGenerator = yeoman.generators.Base.extend({
-  init: function(){
+  init: function() {
     // invoke npm install on finish
-    this.on('end', function() {
-      if (!this.options['skip-install']) {
+    this.on("end", function() {
+      if (!this.options["skip-install"]) {
         this.npmInstall();
       }
     });
@@ -17,47 +16,47 @@ var arwenGenerator = yeoman.generators.Base.extend({
     console.log(this.yeoman);
 
     // replace it with a short and sweet description of your generator
-    console.log(chalk.magenta('You\'re using the restify generator.'));
+    console.log(chalk.magenta("You\"re using the restify generator."));
   },
-  askForApplicationDetails: function(){
+  askForApplicationDetails: function() {
     var done = this.async();
 
     var prompts = [{
-      name: 'appName',
-      message: 'What would you like to call your application?',
-      default: 'testProj'
-    },{
-      name: 'appDescription',
-      message: 'What would be the description of the application?',
-      default: 'NODEJS React Sample Project'
-    },{
-      name: 'appRepository',
-      message: 'What is the repository of this project?',
-      default: ''
+      name: "appName",
+      message: "What would you like to call your application?",
+      default: "testProj"
     }, {
-      name: 'appAuthor',
-      message: 'What is the name of the author?',
-      default: ''
+      name: "appDescription",
+      message: "What would be the description of the application?",
+      default: "NODEJS React Sample Project"
     }, {
-      name: 'dbName',
-      message: 'What is the database name?',
-      default: ''
+      name: "appRepository",
+      message: "What is the repository of this project?",
+      default: ""
     }, {
-      name: 'dbUser',
-      message: 'What is the database username?',
-      default: 'postgres'
+      name: "appAuthor",
+      message: "What is the name of the author?",
+      default: ""
     }, {
-      name: 'dbPass',
-      message: 'What is the database password?',
-      default: ''
+      name: "dbName",
+      message: "What is the database name?",
+      default: ""
     }, {
-      name: 'dbHost',
-      message: 'What is the database host?',
-      default: 'localhost'
+      name: "dbUser",
+      message: "What is the database username?",
+      default: "postgres"
     }, {
-      name: 'dbPort',
-      message: 'What is the database port?',
-      default: '5432'
+      name: "dbPass",
+      message: "What is the database password?",
+      default: ""
+    }, {
+      name: "dbHost",
+      message: "What is the database host?",
+      default: "localhost"
+    }, {
+      name: "dbPort",
+      message: "What is the database port?",
+      default: "5432"
     }
     ];
 
@@ -79,38 +78,39 @@ var arwenGenerator = yeoman.generators.Base.extend({
       done();
     }.bind(this));
   },
-  copyApplicationFolder: function(){
-    this.mkdir('config');
-    this.mkdir('script');
-    this.mkdir('src');
-      this.mkdir('src/Main');
+  initGit: function() {
+    shell.exec("git init && git remote add origin " + this.appRepository);
+  },
+  copyApplicationFolder: function() {
+    this.mkdir("config");
+    this.mkdir("script");
+    this.mkdir("src");
+    this.mkdir("src/Main");
 
-    this.template('script/bootstrap', 'script/bootstrap');
-    this.template('script/db-migrate', 'script/db-migrate');
-    this.template('script/db-reset', 'script/db-reset');
-    this.template('script/debugger', 'script/debugger');
-    this.template('script/lint', 'script/lint');
-    this.template('script/run', 'script/run');
-    this.template('script/test', 'script/test');
+    this.template("script/db-migrate", "script/db-migrate");
+    this.template("script/db-reset", "script/db-reset");
+    this.template("script/run", "script/run");
+    this.template("script/test", "script/test");
 
-    this.template('config/default.js', 'config/default.js');
-    this.template('config/production.js', 'config/production.js');
-    this.template('config/test.js', 'config/test.js');
+    this.template("config/default.js", "config/default.js");
+    this.template("config/production.js", "config/production.js");
+    this.template("config/test.js", "config/test.js");
 
-    this.template('src/Main/dependencies.js', 'src/Main/dependencies.js');
-    this.template('src/Main/index.js', 'src/Main/index.js');
-    this.template('src/Main/settings.js', 'src/Main/settings.js');
+    this.template("src/Main/dependencies.js", "src/Main/dependencies.js");
+    this.template("src/Main/index.js", "src/Main/index.js");
+    this.template("src/Main/settings.js", "src/Main/settings.js");
   },
   renderApplicationDependenciesFiles: function() {
-    this.template('atomic.json', 'atomic.json');
-    this.template('_babelrc', '.babelrc');
-    this.template('_editorconfig', '.editorconfig');
-    this.template('_gitignore', '.gitignore');
-    this.template('_eslintrc', '.eslintrc');
-    this.copy('gulpfile.babel.js');
-    this.copy('package.json');
-    this.copy('nodemon.json');
-    this.copy('README.md');
+    this.template("atomic.json", "atomic.json");
+    this.template("_babelrc", ".babelrc");
+    this.template("_editorconfig", ".editorconfig");
+    this.template("_gitignore", ".gitignore");
+    this.template("_eslintrc", ".eslintrc");
+    this.template("_eslintignore", ".eslintignore");
+    this.copy("gulpfile.babel.js");
+    this.copy("package.json");
+    this.copy("nodemon.json");
+    this.copy("README.md");
   }
 });
 

@@ -1,8 +1,8 @@
-import _ from "lodash"
 import gulp from "gulp"
 import del from "del"
 import gulpPlugins from "gulp-load-plugins"
 import runSequence from "run-sequence"
+import nodemon from "gulp-nodemon"
 let $ = gulpPlugins()
 
 gulp.task("build", () => {
@@ -11,10 +11,21 @@ gulp.task("build", () => {
     .pipe(gulp.dest("lib"))
 })
 
+gulp.task("statics", () => {
+  return gulp.src("src/www/**/*.*")
+  .pipe(gulp.dest("lib/www"))
+})
+
+gulp.task("templates", () => {
+  return gulp.src("src/templates/**/*.*")
+  .pipe(gulp.dest("lib/templates"))
+})
+
 gulp.task("lint", () => {
   return gulp.src("src/**/*.js")
     .pipe($.eslint())
     .pipe($.eslint.format())
+    .pipe($.eslint.failOnError())
 })
 
 gulp.task("test", () => {
@@ -29,11 +40,11 @@ gulp.task("test", () => {
     }))
 })
 
-gulp.task("watch", () => {
-  gulp.watch(["./src/**/*"], () => {
-    runSequence("clean", "build", "dist", "serve")
-  })
-})
+// gulp.task("watch", () => {
+//   gulp.watch(["./src/**/*"], () => {
+//     runSequence("clean", "statics", "templates", "lint", "build", "dist", "serve")
+//   })
+// })
 
 gulp.task("clean", (cb) => {
   return del(["dist", "lib"], cb)
@@ -44,15 +55,20 @@ gulp.task("dist", () => {
     .pipe(gulp.dest("dist"))
 })
 
-gulp.task("serve", (cb) => {
-  require("./dist/Main/index").run()
-  cb()
+gulp.task("serve", () => {
+  nodemon({
+    script: "./script/run",
+    tasks: ["lint"]
+  })
+  .on("restart", function() {
+    console.log("restarted!")
+  })
 })
 
-gulp.task("run", (cb) => {
-  return runSequence("watch", "serve")
+gulp.task("run", () => {
+  return runSequence("default", "lint", "serve")
 })
 
 gulp.task("default", (cb) => {
-  return runSequence("clean", "build", "dist", cb)
+  return runSequence("clean", "statics", "templates", "build", "dist", cb)
 })

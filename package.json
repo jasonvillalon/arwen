@@ -1,6 +1,6 @@
 {
   "name": "generator-arwen",
-  "version": "2.0.18",
+  "version": "3.0.0",
   "description": "Generator Atomic Restify Web NodeJS",
   "scripts": {
     "test": "mocha"
@@ -28,6 +28,7 @@
   "devDependencies": {
     "assert": "^1.3.0",
     "async": "^1.5.2",
+    "eslint": "^2.9.0",
     "fs-extra": "^0.26.4",
     "mocha": "^2.3.4",
     "temp": "^0.8.3"

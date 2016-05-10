@@ -1,3 +1,7 @@
 #!/usr/bin/env node
 
-require("./../dist/dbreset")()
+require("babel-core/register")
+var util = require("bardo").util
+
+// Drop and then create the database
+util.dropDatabase().then(util.createDatabase)

@@ -1,3 +1,8 @@
 #!/usr/bin/env node
-
-require('./../dist/Main/index').run();
+console.log(`RUNNING AT: ${process.env.NODE_ENV}`)
+if (process.env.NODE_ENV === "development") {
+  require("babel-core/register")
+  require("./../Main/index").run();
+} else {
+  require("./../Main/index").run();
+}

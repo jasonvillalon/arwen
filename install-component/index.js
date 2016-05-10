@@ -1,11 +1,10 @@
 "use strict";
-var util = require("util"),
-  path = require("path"),
+var path = require("path"),
   yeoman = require("yeoman-generator"),
   chalk = require("chalk"),
   shell = require("shelljs"),
   _ = require("lodash"),
-  json = require('format-json'),
+  json = require("format-json"),
   installComponent = require("../lib/installComponent"),
   IsThere = require("is-there"),
   registerEverything = require("../lib/registerEverything"),
@@ -13,11 +12,11 @@ var util = require("util"),
   npmInstall = require("../lib/npmInstall");
 
 var AtomicGenerator = yeoman.generators.Base.extend({
-  init: function(){
+  init: function() {
     // invoke npm install on finish
     this.on("end", function() {
       // shell.exec("yo restify:install-component-deps");
-      console.log("DONE")
+      console.log("DONE");
     });
     // have Yeoman greet the user
     console.log(this.yeoman);
@@ -25,7 +24,7 @@ var AtomicGenerator = yeoman.generators.Base.extend({
     // replace it with a short and sweet description of your generator
     console.log(chalk.magenta("You\"re using the Atomic generator."));
   },
-  askForComponentRepo: function(){
+  askForComponentRepo: function() {
     var done = this.async();
     var prompts = [
       {
@@ -43,36 +42,19 @@ var AtomicGenerator = yeoman.generators.Base.extend({
       var getSettings = function() {
         var settings = null;
         try {
-          settings = require(path.resolve("./settings"))
+          settings = require(path.resolve("./settings"));
           this.isComponentDep = true;
           return settings;
         } catch (e2) {
           return false;
         }
       }.bind(this);
-      this.atomicSetting = getSettings();
-      if (!this.atomicSetting) {
-        console.log("You must only install a component to another component.")
-        done();
-      } else {
-        // install the dependency component
-        var dependencyInfo = null
-        if (this.repository.split("https:\/\/").length === 2 || this.repository.split("git@").length === 2) {
-          dependencyInfo = installComponent.bind(this)(this.repository);
-        } else {
-          var pathDest = "../";
-          dependencyInfo = require(path.resolve(pathDest + this.repository + "/settings"))
-          // if (this.repository !== "" && dependencyInfo.Repository === "") {
-          //   console.log("if your component is not local only then you cannot add a relative component as dependency.");
-          //   done();
-          //   return;
-          // }
-        }
 
+      var registerAll = function(dependencyInfo) {
         this.atomic = require(path.resolve("./../../atomic"));
         registerEverything.bind(this)(dependencyInfo);
 
-        this.config = this.atomic.config
+        this.config = this.atomic.config;
         // generate component variables
         generateVariables.bind(this)();
         // install required NPM Package
@@ -85,7 +67,7 @@ var AtomicGenerator = yeoman.generators.Base.extend({
         try {
 
 
-          var d = _.cloneDeep(dependencyInfo)
+          var d = _.cloneDeep(dependencyInfo);
           delete d.AtomicDeps;
           delete d.config;
           delete d.dependencies;
@@ -99,8 +81,6 @@ var AtomicGenerator = yeoman.generators.Base.extend({
             var imports = "";
             var exports = "{";
             _.each(this.atomicSetting.AtomicDeps, function(deps) {
-              var isLocal = deps.Repository == "";
-              var pathDest = "../";
               if (IsThere(path.resolve(pathDest + deps.Name + "/index.js"))) {
                 imports += "import " + deps.Name + " from \"" + pathDest + deps.Name + "\/index\"\n";
                 exports += "  " + deps.Name + ",\n";
@@ -115,10 +95,25 @@ var AtomicGenerator = yeoman.generators.Base.extend({
             this.template("settings.js", path.resolve("./settings.js"));
             this.template("dependencies.js", path.resolve("./dependencies.js"));
           }
-        }catch(e) {
+        } catch (e) {
           console.log("something went wrong!" + e);
         }
         done();
+      }.bind(this);
+      this.atomicSetting = getSettings();
+      if (!this.atomicSetting) {
+        console.log("You must only install a component to another component.");
+        done();
+      }
+      // install the dependency component
+      if (this.repository.split("https:\/\/").length === 2 || this.repository.split("git@").length === 2) {
+        installComponent.bind(this)(this.repository).then(function(dependencyInfo) {
+          registerAll(dependencyInfo);
+        });
+      } else {
+        var pathDest = "../";
+        var dependencyInfo = require(path.resolve(pathDest + this.repository + "/settings"));
+        registerAll(dependencyInfo);
       }
     }.bind(this));
   }

@@ -1,5 +1,5 @@
 {
-  "presets": ["stage-0", "es2015"],
+  //"presets": ["stage-0", "es2015"],
   "plugins": [
     // Syntax
     "add-module-exports",
@@ -58,7 +58,7 @@
     "transform-minify-booleans",
     "transform-object-rest-spread",
     "transform-property-literals",
-    ////"transform-remove-console",
+    //"transform-remove-console",
     "transform-remove-debugger",
     "transform-runtime",
     "transform-strict-mode",

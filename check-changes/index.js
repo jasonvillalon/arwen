@@ -1,15 +1,13 @@
 "use strict";
-var util = require("util"),
-  path = require("path"),
+var path = require("path"),
   yeoman = require("yeoman-generator"),
   chalk = require("chalk"),
   shell = require("shelljs"),
-  _ = require("lodash"),
   IsThere = require("is-there"),
   fs = require("fs");
 
 var AtomicGenerator = yeoman.generators.Base.extend({
-  init: function(){
+  init: function() {
     // invoke npm install on finish
     this.on("end", function() {
       // if (!this.options["skip-install"]) {
@@ -26,7 +24,7 @@ var AtomicGenerator = yeoman.generators.Base.extend({
     var done = this.async();
     var t = this;
     var currentComponentIndex = 0;
-    var askForCommentThenPush = function(components, component) {
+    function askForCommentThenPush(components, component) {
       var prompts = [{
         name: "commitComment",
         message: "You are commiting changes from: " + component + " Component. Please add comment:",
@@ -40,14 +38,14 @@ var AtomicGenerator = yeoman.generators.Base.extend({
         currentComponentIndex += 1;
         commitChanges(components, currentComponentIndex);
       });
-    };
-    var commitChanges = function(components, indexComponent) {
+    }
+    function commitChanges(components, indexComponent) {
       var component = components[indexComponent];
       if (component !== undefined) {
         if (IsThere(path.resolve("./src/" + component + "/.git"))) {
           console.log("Checking " + component);
-          shell.exec("cd " + path.resolve("./src/" + component) + " && git diff")
-          var status = shell.exec("cd " + path.resolve("./src/" + component) + " && git status")
+          shell.exec("cd " + path.resolve("./src/" + component) + " && git diff");
+          var status = shell.exec("cd " + path.resolve("./src/" + component) + " && git status");
           if (status.output.split("modified:").length >= 2 || status.output.split("Untracked files:").length >= 2) {
             askForCommentThenPush(components, component);
           } else {
@@ -61,7 +59,7 @@ var AtomicGenerator = yeoman.generators.Base.extend({
       } else {
         done();
       }
-    };
+    }
     fs.readdir(path.resolve("./src"), function(err, components) {
       commitChanges(components, currentComponentIndex);
     });

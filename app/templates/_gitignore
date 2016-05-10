@@ -6,3 +6,5 @@ config/local*
 tmp*
 build/
 html-report/
+lib/
+dist/
