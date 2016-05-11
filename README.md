@@ -9,7 +9,6 @@ Inspired by [ARMET](https://github.com/armet/node-armet/) Clean and modern frame
 #Dependencies:
 ```
 $ npm install -g yo
-$ npm install -g bower
 $ npm install -g gulp
 ```
 
@@ -26,7 +25,11 @@ $ npm link
 ```
 $ mkdir testProj
 $ cd testProj
-$ yo arwen
+$ yo arwen - create project
+$ yo arwen:install-component-deps - install default dependencies
+$ yo arwen:migrate - create dependencies migration files
+$ yo arwen:script/db-reset - create database
+$ yo arwen:script/db-migrate up - start database migration
 ```
 
 # Create Component:
