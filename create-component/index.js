@@ -101,7 +101,7 @@ var AtomicGenerator = yeoman.generators.Base.extend({
                 delete d.dependencies;
                 this.component.AtomicDeps.push(d);
                 askForAtomDeps();
-              });
+              }.bind(this));
             } else {
               var dependencyInfo = dependencyInfo = require(path.resolve("./src/" + prop.depRepository + "/settings"));
               // installing local dependency to non-local component is not allowed

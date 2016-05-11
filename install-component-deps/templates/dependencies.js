@@ -1,0 +1,3 @@
+<%= imports %>
+
+export default <%= exports %>

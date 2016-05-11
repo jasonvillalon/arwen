@@ -36,6 +36,7 @@ var AtomicGenerator = yeoman.generators.Base.extend({
 
     // Ask the repository of the component to be installed
     this.prompt(prompts, function(props) {
+      var pathDest = "../";
       this.repository = props.repository;
       this.isComponentDep = false;
       // we are installing a component as a dependency of another
@@ -65,8 +66,6 @@ var AtomicGenerator = yeoman.generators.Base.extend({
         this.template("_atomic", path.resolve("./../../atomic.json"));
 
         try {
-
-
           var d = _.cloneDeep(dependencyInfo);
           delete d.AtomicDeps;
           delete d.config;
@@ -78,6 +77,7 @@ var AtomicGenerator = yeoman.generators.Base.extend({
             // create the dependencies.js content
             // so what we need to do is just read the previous settigns and add the new component to it
             // then rewrite everything in settings.js and dependencies.js
+            console.log(this.atomicSetting);
             var imports = "";
             var exports = "{";
             _.each(this.atomicSetting.AtomicDeps, function(deps) {
@@ -101,6 +101,7 @@ var AtomicGenerator = yeoman.generators.Base.extend({
         done();
       }.bind(this);
       this.atomicSetting = getSettings();
+      pathDest = "../";
       if (!this.atomicSetting) {
         console.log("You must only install a component to another component.");
         done();
@@ -111,7 +112,6 @@ var AtomicGenerator = yeoman.generators.Base.extend({
           registerAll(dependencyInfo);
         });
       } else {
-        var pathDest = "../";
         var dependencyInfo = require(path.resolve(pathDest + this.repository + "/settings"));
         registerAll(dependencyInfo);
       }
