@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 require("babel-core/register")
-var util = require("bardo").util
+var database = require("bardo").database
 
 // Drop and then create the database
-util.dropDatabase().then(util.createDatabase)
+database.drop().then(database.create)
