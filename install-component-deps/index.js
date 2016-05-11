@@ -8,7 +8,8 @@ var
   registerEverything = require("../lib/registerEverything"),
   generateVariables = require("../lib/generateVariables"),
   npmInstall = require("../lib/npmInstall"),
-  json = require("format-json");
+  json = require("format-json"),
+  _ = require("lodash");
 
 var AtomicGenerator = yeoman.generators.Base.extend({
   init: function() {
@@ -61,27 +62,33 @@ var AtomicGenerator = yeoman.generators.Base.extend({
             registerEverything.bind(this)(componentSettings);
           }
           // generate component variables
-          generateVariables.bind(this)(this.atomic, isComponentDep);
-          // generate component variables
-          generateVariables.bind(this)();
+          generateVariables.bind(t)(this.atomic, isComponentDep);
           // install required NPM Package
-          npmInstall.bind(this)(this.atomic);
+          npmInstall.bind(t)(t.atomic);
           // rewrite atomic.json
-          this.mySettings = json.plain(this.atomic);
+          t.mySettings = json.plain(t.atomic);
           if (isComponentDep) {
             shell.exec("rm -rf " + path.resolve("./../../atomic.json"));
-            this.template("_atomic", path.resolve("./../../atomic.json"));
+            t.template("_atomic", path.resolve("./../../atomic.json"));
           } else {
             shell.exec("rm -rf " + path.resolve("./atomic.json"));
-            this.template("_atomic", path.resolve("./atomic.json"));
+            t.template("_atomic", path.resolve("./atomic.json"));
           }
-        }.bind(this));
+        }.bind(t));
       } catch (e) {
         console.log("something went wrong!" + e);
       }
       done();
     }
-  }
+  },
+  // migrations: function() {
+  //   var t = this;
+  //   _.each(this.atomic.migrations, function(item) {
+  //     var output = shell.exec("./script/db-migrate create " + t._.slugify(item.Name));
+  //     var migrationFile = output.output.replace("Created migration -- ", "").replace("\n", "");
+  //     shell.exec("cp -f " + path.resolve("./src/" + item.Name + "/db-migration.js") + " " + migrationFile);
+  //   });
+  // }
 });
 
 module.exports = AtomicGenerator;
