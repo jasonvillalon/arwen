@@ -77,23 +77,9 @@ var AtomicGenerator = yeoman.generators.Base.extend({
             // create the dependencies.js content
             // so what we need to do is just read the previous settigns and add the new component to it
             // then rewrite everything in settings.js and dependencies.js
-            console.log(this.atomicSetting);
-            var imports = "";
-            var exports = "{";
-            _.each(this.atomicSetting.AtomicDeps, function(deps) {
-              if (IsThere(path.resolve(pathDest + deps.Name + "/index.js"))) {
-                imports += "import " + deps.Name + " from \"" + pathDest + deps.Name + "\/index\"\n";
-                exports += "  " + deps.Name + ",\n";
-              }
-            });
-            exports += "}";
-            // add it to templates
-            this.imports = imports;
-            this.exports = exports;
             this.atomicSetting = json.plain(this.atomicSetting);
             // now rewrite the settings of the parent component
             this.template("settings.js", path.resolve("./settings.js"));
-            this.template("dependencies.js", path.resolve("./dependencies.js"));
           }
         } catch (e) {
           console.log("something went wrong!" + e);

@@ -1,8 +1,6 @@
-import dependencies from "./dependencies"
+import {Server} from "../Server/index"
 
-let {Server} = dependencies
-
-export function run() {
+export default function run() {
   console.log("Welcome to Atomic Project")
   Server.run()
 }

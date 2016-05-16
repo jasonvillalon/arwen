@@ -8,7 +8,8 @@ module.exports = {
       "Name": "Server",
       "Description": "Server",
       "Repository": "git@bitbucket.org:jasonvillalon/server.git",
-      "Version": "0.0.0"
+      "Version": "0.0.0",
+      "importAs": "*"
     }
   ],
   config: {

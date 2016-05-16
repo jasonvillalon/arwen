@@ -93,8 +93,6 @@ var AtomicGenerator = yeoman.generators.Base.extend({
           this.prompt(prompt, function(prop) {
             if (prop.depRepository.split("https").length === 2 || prop.depRepository.split("git@").length === 2) {
               installComponent.bind(this)(prop.depRepository).then(function(dependencyInfo) {
-                this.imports += "import " + dependencyInfo.Name + " from \"" + dest + dependencyInfo.Name + "\/index\"\n";
-                this.exports += "\t" + dependencyInfo.Name + ",\n";
                 var d = _.cloneDeep(dependencyInfo);
                 delete d.AtomicDeps;
                 delete d.config;
@@ -136,7 +134,6 @@ var AtomicGenerator = yeoman.generators.Base.extend({
     this.template("_atomic", path.resolve("atomic.json"));
     this.dependencies = json.plain(this.AtomicDeps);
     this.template("index.js", "src/" + this.classifiedComponentName + "/index.js");
-    this.template("dependencies.js", "src/" + this.classifiedComponentName + "/dependencies.js");
     this.template("settings.js", "src/" + this.classifiedComponentName + "/settings.js");
   },
 });

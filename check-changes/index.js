@@ -46,7 +46,7 @@ var AtomicGenerator = yeoman.generators.Base.extend({
           console.log("Checking " + component);
           shell.exec("cd " + path.resolve("./src/" + component) + " && git diff");
           var status = shell.exec("cd " + path.resolve("./src/" + component) + " && git status");
-          if (status.output.split("modified:").length >= 2 || status.output.split("Untracked files:").length >= 2) {
+          if (status.output.split("modified:").length >= 2 || status.output.split("Untracked files:").length >= 2 || status.output.split("deleted:").length >= 2) {
             askForCommentThenPush(components, component);
           } else {
             currentComponentIndex += 1;
