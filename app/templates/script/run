@@ -2,7 +2,7 @@
 console.log(`RUNNING AT: ${process.env.NODE_ENV}`)
 if (process.env.NODE_ENV === "development") {
   require("babel-core/register")
-  require("./../Main/index").run();
+  require("./../src/Main/index")();
 } else {
-  require("./../Main/index").run();
+  require("./../dist/Main/index")();
 }

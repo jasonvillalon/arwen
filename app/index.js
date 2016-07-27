@@ -96,7 +96,6 @@ var arwenGenerator = yeoman.generators.Base.extend({
     this.template("config/production.js", "config/production.js");
     this.template("config/test.js", "config/test.js");
 
-    this.template("src/Main/dependencies.js", "src/Main/dependencies.js");
     this.template("src/Main/index.js", "src/Main/index.js");
     this.template("src/Main/settings.js", "src/Main/settings.js");
   },

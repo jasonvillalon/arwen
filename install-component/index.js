@@ -6,7 +6,6 @@ var path = require("path"),
   _ = require("lodash"),
   json = require("format-json"),
   installComponent = require("../lib/installComponent"),
-  IsThere = require("is-there"),
   registerEverything = require("../lib/registerEverything"),
   generateVariables = require("../lib/generateVariables"),
   npmInstall = require("../lib/npmInstall");

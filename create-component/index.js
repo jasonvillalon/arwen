@@ -134,6 +134,7 @@ var AtomicGenerator = yeoman.generators.Base.extend({
     this.template("_atomic", path.resolve("atomic.json"));
     this.dependencies = json.plain(this.AtomicDeps);
     this.template("index.js", "src/" + this.classifiedComponentName + "/index.js");
+    this.template("model.js", "src/" + this.classifiedComponentName + "/" + this.classifiedComponentName + ".js");
     this.template("settings.js", "src/" + this.classifiedComponentName + "/settings.js");
   },
 });
