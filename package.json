@@ -1,6 +1,6 @@
 {
   "name": "generator-arwen",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "Generator Atomic Restify Web NodeJS",
   "scripts": {
     "test": "mocha"
@@ -16,7 +16,6 @@
     "restify"
   ],
   "dependencies": {
-    "bluebird": "^3.4.1",
     "chalk": "^0.5.1",
     "format-json": "^1.0.3",
     "glob": "^5.0.15",
