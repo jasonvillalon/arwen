@@ -30,7 +30,8 @@ var AtomicGenerator = yeoman.generators.Base.extend({
         var output = shell.exec("./script/db-migrate create " + t._.slugify(item.Name));
         var migrationFile = output.output.replace("Created migration -- ", "").replace("\n", "");
         migrationFile = migrationFile.match(/(\/[^/ ]*)+\/?/g);
-        var cmd = "cp -f " + path.resolve("./src/" + item.Name + "/db-migration.js") + " " + migrationFile;
+        console.log("COPY: " + path.resolve("./src/" + item.Name + "/db-migration.js") + " to " + migrationFile[migrationFile.length - 1]);
+        var cmd = "cp -f " + path.resolve("./src/" + item.Name + "/db-migration.js") + " " + migrationFile[migrationFile.length - 1];
         // console.log(cmd);
         shell.exec(cmd, {silent: true}, function() {
           // console.log(ress);
