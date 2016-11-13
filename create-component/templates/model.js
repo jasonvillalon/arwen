@@ -2,9 +2,7 @@ import AbstractModel from "AbstractModel/index"
 
 class <%= classifiedComponentName %> extends AbstractModel {
   static table = "<%= slugifiedComponentName %>"
-  static dbFields = [
-
-  ]
+  static dbFields = <%= fieldNames %>
 }
 
 export default <%= classifiedComponentName %>

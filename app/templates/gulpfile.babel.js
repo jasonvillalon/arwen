@@ -3,6 +3,10 @@ import del from "del"
 import gulpPlugins from "gulp-load-plugins"
 import runSequence from "run-sequence"
 import nodemon from "gulp-nodemon"
+import bunyan from "bunyan"
+import pkg from "./package.json"
+import path from "path"
+import moment from "moment"
 let $ = gulpPlugins()
 
 gulp.task("build", () => {
@@ -62,6 +66,19 @@ gulp.task("serve", () => {
   })
   .on("restart", function() {
     console.log("restarted!")
+  })
+  .on("crash", function() {
+    let logFile = path.join("./", "restart-log.json")
+    let logger = bunyan.createLogger({
+      name: pkg.name,
+      streams: [
+        {
+          path: logFile,
+          level: "trace"
+        }
+      ]
+    })
+    logger.info("Restart started at " + moment().format("MM/DD/YYYY HH:mm:ss"))
   })
 })
 
