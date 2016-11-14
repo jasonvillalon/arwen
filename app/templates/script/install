@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 console.log(`RUNNING AT: ${process.env.NODE_ENV}`)
+require("babel-core/register")
 if (process.env.NODE_ENV === "development") {
-  require("babel-core/register")
-  require("./../src/Main/index").start();
+  require("./../src/Main/install")()
 } else {
-  require("./../dist/Main/index").start();
+  require("./../dist/Main/install")()
 }
