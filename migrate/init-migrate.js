@@ -26,7 +26,9 @@ const AtomicGenerator = yeoman.generators.Base.extend({
       if (!item.created && IsThere(path.resolve("./src/" + item.Name + "/db-migration.js"))) {
         let output = shell.exec("./script/db-migrate create " + this._.slugify(item.Name))
         let migrationFile = output.output.replace("Created migration -- ", "").replace("\n", "")
+        console.log(migrationFile)
         migrationFile = migrationFile.match(/(\/[^/ ]*)+\/?/g)
+        console.log(migrationFile)
         console.log("COPY: " + path.resolve("./src/" + item.Name + "/db-migration.js") + " to " + migrationFile[migrationFile.length - 1])
         let cmd = "cp -f " + path.resolve("./src/" + item.Name + "/db-migration.js") + " " + migrationFile[migrationFile.length - 1]
         // console.log(cmd)
