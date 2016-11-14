@@ -104,7 +104,7 @@ var AtomicGenerator = yeoman.generators.Base.extend({
     pathDest = "../"
     // install the dependency component
     if (this.repository.split("https:\/\/").length === 2 || this.repository.split("git@").length === 2) {
-      let dependencyInfo = installComponent.bind(this)(this.repository)
+      let dependencyInfo = await installComponent.bind(this)(this.repository)
       registerAll(dependencyInfo)
     } else {
       var dependencyInfo = require(path.resolve(pathDest + this.repository + "/settings"))
