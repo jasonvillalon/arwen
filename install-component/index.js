@@ -1,3 +1,5 @@
-require("babel-core/register")
-var component = require("./install-component")
-module.exports = component
+"use strict";
+
+require("babel-core/register");
+var component = require("./install-component");
+module.exports = component;
