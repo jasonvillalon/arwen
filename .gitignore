@@ -1,17 +1,1 @@
 /node_modules
-/app
-/check-changes
-/check-update
-/create-component
-/install-component
-/install-component-deps
-/lib
-/migrate
-/app/*
-/check-changes/*
-/check-update/*
-/create-component/*
-/install-component/*
-/install-component-deps/*
-/lib/*
-/migrate/*
