@@ -5,7 +5,7 @@ import {
   <% }) %>
 } from "Validators/index"
 
-<% links.forEach(function(link) { %>import <%= link.name %> from "<%= link.path %>"
+<% importsLinks.forEach(function(link) { %>import <%= link.name %> from "<%= link.path %>"
 <% }) %>
 
 class <%= classifiedComponentName %> extends AbstractModel {

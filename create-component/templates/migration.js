@@ -1,5 +1,5 @@
 exports.up = function(pgm) {
-  pgm.createTable("<%= this.snakeCasedComponentName %>", {
+  pgm.createTable("<%= snakeCasedComponentName %>", {
     "id": {
       type: "uuid",
       primaryKey: true,
@@ -45,12 +45,12 @@ exports.up = function(pgm) {
     }
   });
   pgm.sql(`
-    CREATE TRIGGER update_<%= this.snakeCasedComponentName %>_timestamp
-    BEFORE UPDATE ON "<%= this.snakeCasedComponentName %>"
+    CREATE TRIGGER update_<%= snakeCasedComponentName %>_timestamp
+    BEFORE UPDATE ON "<%= snakeCasedComponentName %>"
     FOR EACH ROW EXECUTE PROCEDURE update_timestamp();`);
 };
 
 exports.down = function(pgm) {
-  pgm.sql("DROP TRIGGER update_<%= this.snakeCasedComponentName %>_timestamp on <%= this.snakeCasedComponentName %>");
-  pgm.dropTable("<%= this.snakeCasedComponentName %>");
+  pgm.sql("DROP TRIGGER update_<%= snakeCasedComponentName %>_timestamp on <%= snakeCasedComponentName %>");
+  pgm.dropTable("<%= snakeCasedComponentName %>");
 };

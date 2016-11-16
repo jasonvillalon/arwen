@@ -1,6 +1,6 @@
 {
   "name": "generator-arwen",
-  "version": "3.1.4",
+  "version": "3.1.6",
   "description": "Generator Atomic Restify Web NodeJS",
   "scripts": {
     "prepublish": "gulp"
