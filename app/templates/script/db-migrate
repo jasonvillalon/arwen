@@ -1,0 +1,132 @@
+#!/usr/bin/env node
+require("babel-core/register")
+require("dotenv").load()
+var util = require("util");
+var optimist = require("optimist");
+var Migration = require("node-pg-migrate/lib/migration");
+var MigrationRunner = require("node-pg-migrate/lib/runner");
+var config = require("config");
+
+process.on("uncaughtException", function(err) {
+  console.log(err.stack)
+  process.exit(1)
+})
+
+var argv = optimist
+    .default({
+      verbose: false,
+      "force-exit": false,
+      "migrations-dir": process.cwd() + "/migrations",
+      "migrations-table": "pgmigrations",
+    })
+    .usage("Usage: db-migrate [up|down|create] migrationName [options]")
+
+    .describe("migrations-dir", "The directory containing your migration files (default = `migrations`).")
+    .alias("m", "migrations-dir")
+    .string("m")
+
+    .describe("migrations-table", "The table storing which migrations have been run (default = `pgmigrations`)")
+    .alias("t", "migrations-table")
+    .string("t")
+
+    .describe("dry-run", "Prints the SQL but doesn\"t run it.")
+    .boolean("dry-run")
+
+    .describe("verbose", "Verbose mode.")
+    .alias("v", "verbose")
+    .boolean("v")
+
+    .alias("h", "help")
+    .alias("h", "?")
+    .boolean("h")
+
+    .describe("version", "Print version info.")
+    .alias("i", "version")
+    .boolean("version")
+
+    .argv
+
+if (argv.version) {
+  console.log(module.exports.version)
+  process.exit(0)
+}
+
+if (argv.help || argv._.length === 0) {
+  optimist.showHelp()
+  process.exit(1)
+}
+
+global.verbose = argv.verbose
+global.dryRun = argv["dry-run"]
+if (global.dryRun) {
+  console.log("dry run")
+}
+
+
+var MIGRATIONS_DIR = argv["migrations-dir"]
+var DATABASE_URL = process.env["DATABASE_URL"] || `postgres://${config.get("db.user")}:${config.get("db.password")}@${config.get("db.host")}:${config.get("db.port")}/${config.get("db.name")}`
+var MIGRATIONS_TABLE = argv["migrations-table"]
+
+var action = argv._.shift()
+var migrationName
+
+if (`${action}` === "create") {
+
+  // replaces spaces with dashes - should help fix some errors
+  migrationName = argv._.length ? argv._.join("-") : ""
+  // forces use of dashes in names - keep thing clean
+  migrationName = migrationName.replace(/_ /g, "-")
+
+  if (!migrationName) {
+    console.log("\"migrationName\" is required.")
+    optimist.showHelp()
+    process.exit(1)
+  }
+
+  var migration = Migration.create(migrationName, MIGRATIONS_DIR)
+  console.log(util.format("Created migration -- %s", migration.path))
+
+} else if (`${action}` === "up" || `${action}` === "down") {
+
+  var updownArg = argv._.length ? argv._.shift() : null
+  var numMigrations
+
+  if (updownArg != null) {
+    if (parseInt(updownArg) === updownArg) {
+      numMigrations = parseInt(updownArg)
+    } else {
+      migrationName = argv._.join("-").replace(/_ /g, "-")
+    }
+  } else if (numMigrations === undefined) {
+    if (`${action}` === "up") numMigrations = Infinity
+    if (`${action}` === "down") numMigrations = 1
+  }
+
+  var runner = new MigrationRunner({
+    "database_url": DATABASE_URL,
+    dir: MIGRATIONS_DIR,
+    "migrations_table": MIGRATIONS_TABLE,
+    direction: action,
+    count: numMigrations,
+    file: migrationName
+  })
+
+  runner.run(function(err) {
+    // finish -- show some logging about what happened?
+    if (err) {
+      console.log(err.stack)
+      process.exit(1)
+    }
+    console.log("Migrations complete!")
+    process.exit(0)
+  })
+} else {
+  console.log("Invalid Action: Must be [up|down|create].")
+  optimist.showHelp()
+  process.exit(1)
+}
+
+if (argv["force-exit"]) {
+  console.log("Forcing exit")
+  process.exit(0)
+}

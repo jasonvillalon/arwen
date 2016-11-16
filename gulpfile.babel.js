@@ -4,8 +4,12 @@ var gulp = require("gulp"),
 let $ = gulpPlugins();
 
 gulp.task("build", function() {
-  return gulp.src(["src/*/*.js"])
+  gulp.src(["src/**/*"])
+    .pipe(gulp.dest("dist/"));
+  gulp.src(["dist/*/*.js"])
     .pipe($.babel())
+    .pipe(gulp.dest("dist/"));
+  return gulp.src(["dist/**/*"])
     .pipe(gulp.dest("./"));
 });
 
