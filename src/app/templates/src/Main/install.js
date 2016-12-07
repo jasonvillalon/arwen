@@ -46,7 +46,7 @@ async function installfrontend() {
       }
     } else {
       if (!isThere("installed")) {
-        await exec("git clone git@bitbucket.org:codehoodph/kineo-frontend.git installed --recurse-submodules")
+        await exec(`git clone ${config.get("frontEndRepo")} installed --recurse-submodules`)
       }
       await exec("cd installed; npm install && ~/.nvm/versions/node/v6.8.0/bin/jspm install && ~/.nvm/versions/node/v6.8.0/bin/bower install --allow-root")
       newPackage = require(path.resolve("./installed/package.json"))
