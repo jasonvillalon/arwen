@@ -22,6 +22,7 @@ module.exports = {
       user: "<%= dbUser %>",
       password: "<%= dbPass %>",
       port: <%= dbPort %>
-    }
+    },
+    frontEndRepo: ""
   }
 };
