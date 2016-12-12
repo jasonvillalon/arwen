@@ -1,0 +1,18 @@
+{
+  "Name": "<% slugifiedAppName %>",
+  "AtomicDeps": [
+    {
+      "Name": "Main",
+      "Description": "Main",
+      "Repository": "",
+      "Version": "0.0.0"
+    },
+    {
+      "Name": "Server",
+      "Description": "Server",
+      "Repository": "git@bitbucket.org:codehoodph/server.git",
+      "Version": "0.0.0",
+      "importAs": "*"
+    }
+  ]
+}

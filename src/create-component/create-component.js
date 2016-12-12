@@ -32,6 +32,8 @@ let AtomicGenerator = yeoman.generators.Base.extend({
     // replace it with a short and sweet description of your generator
     console.log(chalk.magenta("You're using the Atomic generator."))
     this.fields = []
+    this.links = []
+    this.importsLinks = []
   },
   async askForComponentDetails() {
     let done = this.async()
@@ -52,6 +54,7 @@ let AtomicGenerator = yeoman.generators.Base.extend({
     this.humanizedComponentName = this._.humanize(this.componentName)
     this.snakeCasedComponentName = this._.underscored(this.componentName)
     this.classifiedComponentName = this._.classify(this.componentName)
+    this.camelizedComponentName = this._.camelize(this.componentName)
 
     done()
   },
@@ -141,7 +144,7 @@ let AtomicGenerator = yeoman.generators.Base.extend({
         name: "dataType",
         message: "Enter data type:",
         type: "list",
-        choices: ["text", "numeric", "integer", "boolean", "date", "datetime", "uuid"],
+        choices: ["text", "numeric", "integer", "boolean", "date", "timestamp", "uuid"],
         default: "text"
       },
       {
@@ -176,7 +179,7 @@ let AtomicGenerator = yeoman.generators.Base.extend({
       },
       {
         name: "linkedTo",
-        message: "Linked to other model? (leave blank if not)",
+        message: "Reference:",
         default: ""
       }
     ]
@@ -192,12 +195,62 @@ let AtomicGenerator = yeoman.generators.Base.extend({
     })
     this.askForFields()
   },
+  async askForLinks() {
+    let done = this.async()
+    let confirmAddFields = [
+      {
+        name: "confirm",
+        type: "confirm",
+        message: "Add Link?",
+        default: true
+      }
+    ]
+    let confirm = await this.prompting(confirmAddFields)
+    if (!confirm.confirm) {
+      return done()
+    }
+    let prompts = [
+      {
+        name: "fk",
+        message: "Enter FK:",
+        default: ""
+      },
+      {
+        name: "alias",
+        message: "Enter Alias:",
+        default: "text"
+      },
+      {
+        name: "object",
+        message: "Enter object variable:",
+        default: ""
+      },
+      {
+        name: "path",
+        message: "Enter object path:",
+        default: ""
+      }
+    ]
+
+    let field = await this.prompting(prompts)
+    this.links.push({
+      fk: field.fk,
+      alias: field.alias,
+      name: this._.classify(field.object),
+      path: field.path
+    })
+    if (_.findIndex(this.importsLinks, {path: field.path}) === -1) {
+      this.importsLinks.push({
+        name: this._.classify(field.object),
+        path: field.path
+      })
+    }
+    this.askForLinks()
+  },
   copyApplicationFolder() {
     this.atomic = require(path.resolve("atomic.json"))
     registerEverything.bind(this)(this.component)
     this.config = this.atomic.config
-    // generate component variables
-    generateVariables.bind(this)(this.atomic)
     // install required NPM Package
     npmInstall.bind(this)(this.atomic)
     this.component = json.plain(this.component)
@@ -207,7 +260,6 @@ let AtomicGenerator = yeoman.generators.Base.extend({
     if (this.fields.length > 0) {
       this.fieldNames = json.plain(this.fields.map(field => field.name))
       this.validators = []
-      this.links = []
       this.fields.map((field, index) => {
         if (field.validator.length > 0) {
           field.validator.map(validator => {
@@ -221,19 +273,13 @@ let AtomicGenerator = yeoman.generators.Base.extend({
           })
         }
         if (field.linkedTo) {
-          let obj = require(path.resolve(`./src/${field.linkedTo}`))
-          this.fields[index].reference = obj.table
-          if (_.findIndex(this.links, {path: field.linkedTo}) === -1) {
-            this.links.push({
-              fk: field.name,
-              alias: obj.table,
-              name: this._.classify(obj.table),
-              path: field.linkedTo
-            })
-          }
+          // let obj = require(path.resolve(`./src/${field.linkedTo}`))
+          // delete require.cache[path.resolve(`./src/${field.linkedTo}`)]
+          this.fields[index].reference = field.linkedTo
         }
       })
       this.schema = schema
+      // generate component variables
       this.template("model.js", "src/" + this.classifiedComponentName + "/" + this.classifiedComponentName + ".js")
       this.template("migration.js", "src/" + this.classifiedComponentName + "/db-migration.js")
       this.atomic.migrations.push({
@@ -242,7 +288,9 @@ let AtomicGenerator = yeoman.generators.Base.extend({
     }
     // rewrite atomic.json
     this.mySettings = json.plain(this.atomic)
+    generateVariables.bind(this)(this.atomic)
     this.template("settings.js", "src/" + this.classifiedComponentName + "/settings.js")
+    this.template("resource.js", "src/" + this.classifiedComponentName + `/${this.slugifiedComponentName}-resource.js`)
     shell.exec("rm -rf " + path.resolve("atomic.json"))
     this.template("_atomic", path.resolve("atomic.json"))
   },

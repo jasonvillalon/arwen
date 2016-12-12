@@ -81,6 +81,8 @@ var AtomicGenerator = _yeomanGenerator2["default"].generators.Base.extend({
     // replace it with a short and sweet description of your generator
     console.log(_chalk2["default"].magenta("You're using the Atomic generator."));
     this.fields = [];
+    this.links = [];
+    this.importsLinks = [];
   },
   askForComponentDetails: function () {
     var _ref = (0, _asyncToGenerator3["default"])(_regenerator2["default"].mark(function _callee() {
@@ -111,10 +113,11 @@ var AtomicGenerator = _yeomanGenerator2["default"].generators.Base.extend({
               this.humanizedComponentName = this._.humanize(this.componentName);
               this.snakeCasedComponentName = this._.underscored(this.componentName);
               this.classifiedComponentName = this._.classify(this.componentName);
+              this.camelizedComponentName = this._.camelize(this.componentName);
 
               done();
 
-            case 12:
+            case 13:
             case "end":
               return _context.stop();
           }
@@ -276,7 +279,7 @@ var AtomicGenerator = _yeomanGenerator2["default"].generators.Base.extend({
                 name: "dataType",
                 message: "Enter data type:",
                 type: "list",
-                choices: ["text", "numeric", "integer", "boolean", "date", "datetime", "uuid"],
+                choices: ["text", "numeric", "integer", "boolean", "date", "timestamp", "uuid"],
                 "default": "text"
               }, {
                 name: "notNull",
@@ -294,7 +297,7 @@ var AtomicGenerator = _yeomanGenerator2["default"].generators.Base.extend({
                 choices: ["isRequired", "isUUID", "isLength(min, max)", "isBool", "isPhoneNumber", "isInteger", "isFloat", "isString", "isIn(values)", "isDate", "isArray(schema)", "isObject(schema)"]
               }, {
                 name: "linkedTo",
-                message: "Linked to other model? (leave blank if not)",
+                message: "Reference:",
                 "default": ""
               }];
               _context3.next = 10;
@@ -327,14 +330,91 @@ var AtomicGenerator = _yeomanGenerator2["default"].generators.Base.extend({
 
     return askForFields;
   }(),
+  askForLinks: function () {
+    var _ref4 = (0, _asyncToGenerator3["default"])(_regenerator2["default"].mark(function _callee4() {
+      var done, confirmAddFields, confirm, prompts, field;
+      return _regenerator2["default"].wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              done = this.async();
+              confirmAddFields = [{
+                name: "confirm",
+                type: "confirm",
+                message: "Add Link?",
+                "default": !0
+              }];
+              _context4.next = 4;
+              return this.prompting(confirmAddFields);
+
+            case 4:
+              confirm = _context4.sent;
+
+              if (confirm.confirm) {
+                _context4.next = 7;
+                break;
+              }
+
+              return _context4.abrupt("return", done());
+
+            case 7:
+              prompts = [{
+                name: "fk",
+                message: "Enter FK:",
+                "default": ""
+              }, {
+                name: "alias",
+                message: "Enter Alias:",
+                "default": "text"
+              }, {
+                name: "object",
+                message: "Enter object variable:",
+                "default": ""
+              }, {
+                name: "path",
+                message: "Enter object path:",
+                "default": ""
+              }];
+              _context4.next = 10;
+              return this.prompting(prompts);
+
+            case 10:
+              field = _context4.sent;
+
+              this.links.push({
+                fk: field.fk,
+                alias: field.alias,
+                name: this._.classify(field.object),
+                path: field.path
+              });
+              if (_lodash2["default"].findIndex(this.importsLinks, { path: field.path }) === -1) {
+                this.importsLinks.push({
+                  name: this._.classify(field.object),
+                  path: field.path
+                });
+              }
+              this.askForLinks();
+
+            case 14:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, this);
+    }));
+
+    function askForLinks() {
+      return _ref4.apply(this, arguments);
+    }
+
+    return askForLinks;
+  }(),
   copyApplicationFolder: function copyApplicationFolder() {
     var _this2 = this;
 
     this.atomic = require(_path2["default"].resolve("atomic.json"));
     _registerEverything2["default"].bind(this)(this.component);
     this.config = this.atomic.config;
-    // generate component variables
-    _generateVariables2["default"].bind(this)(this.atomic);
     // install required NPM Package
     _npmInstall2["default"].bind(this)(this.atomic);
     this.component = _formatJson2["default"].plain(this.component);
@@ -346,7 +426,6 @@ var AtomicGenerator = _yeomanGenerator2["default"].generators.Base.extend({
         return field.name;
       }));
       this.validators = [];
-      this.links = [];
       this.fields.map(function (field, index) {
         if (field.validator.length > 0) {
           field.validator.map(function (validator) {
@@ -360,19 +439,13 @@ var AtomicGenerator = _yeomanGenerator2["default"].generators.Base.extend({
           });
         }
         if (field.linkedTo) {
-          var obj = require(_path2["default"].resolve("./src/" + field.linkedTo));
-          _this2.fields[index].reference = obj.table;
-          if (_lodash2["default"].findIndex(_this2.links, { path: field.linkedTo }) === -1) {
-            _this2.links.push({
-              fk: field.name,
-              alias: obj.table,
-              name: _this2._.classify(obj.table),
-              path: field.linkedTo
-            });
-          }
+          // let obj = require(path.resolve(`./src/${field.linkedTo}`))
+          // delete require.cache[path.resolve(`./src/${field.linkedTo}`)]
+          _this2.fields[index].reference = field.linkedTo;
         }
       });
       this.schema = schema;
+      // generate component variables
       this.template("model.js", "src/" + this.classifiedComponentName + "/" + this.classifiedComponentName + ".js");
       this.template("migration.js", "src/" + this.classifiedComponentName + "/db-migration.js");
       this.atomic.migrations.push({
@@ -381,7 +454,9 @@ var AtomicGenerator = _yeomanGenerator2["default"].generators.Base.extend({
     }
     // rewrite atomic.json
     this.mySettings = _formatJson2["default"].plain(this.atomic);
+    _generateVariables2["default"].bind(this)(this.atomic);
     this.template("settings.js", "src/" + this.classifiedComponentName + "/settings.js");
+    this.template("resource.js", "src/" + this.classifiedComponentName + ("/" + this.slugifiedComponentName + "-resource.js"));
     _shelljs2["default"].exec("rm -rf " + _path2["default"].resolve("atomic.json"));
     this.template("_atomic", _path2["default"].resolve("atomic.json"));
   }

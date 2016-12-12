@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+
+# DIR=$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd))
+# (cd $DIR; NODE_ENV=test script/db-reset)
+# (cd $DIR; NODE_ENV=test script/db-migrate up)
+(cd $(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd));
+  NODE_ENV=test node_modules/.bin/mocha --bail --timeout 60000 -s 500 -R spec --recursive --compilers js:babel-core/register $@ ./test
+)
